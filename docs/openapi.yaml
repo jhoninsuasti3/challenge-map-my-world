@@ -1,0 +1,399 @@
+openapi: 3.0.2
+info:
+  title: API orbidi
+  description: Orbidi API
+  version: 1.0.0
+paths:
+  /categories/:
+    get:
+      summary: List Categories
+      description: "Retrieve a list of all categories.\n\nArgs:\n    db (Session):\
+        \ The database session.\n\nReturns:\n    List[CategoryResponse]: The list\
+        \ of all categories."
+      operationId: list_categories_categories__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response List Categories Categories  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryResponse'
+    post:
+      summary: Create New Category
+      description: "Create a new category.\n\nArgs:\n    category (CategoryCreate):\
+        \ The category data to create.\n    db (Session): The database session.\n\n\
+        Returns:\n    CategoryResponse: The created category data."
+      operationId: create_new_category_categories__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /categories/{category_id}:
+    get:
+      summary: Get Single Category
+      description: "Retrieve a single category by its ID.\n\nArgs:\n    category_id\
+        \ (int): The ID of the category to retrieve.\n    db (Session): The database\
+        \ session.\n\nReturns:\n    CategoryResponse: The category data if found.\n\
+        \nRaises:\n    HTTPException: If the category is not found."
+      operationId: get_single_category_categories__category_id__get
+      parameters:
+      - required: true
+        schema:
+          title: Category Id
+          type: integer
+        name: category_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /locations/:
+    get:
+      summary: List All Locations
+      description: "List all locations.\n\nArgs:\n    db (Session): The database session.\n\
+        \nReturns:\n    List[LocationResponse]: A list of all locations."
+      operationId: list_all_locations_locations__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response List All Locations Locations  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationResponse'
+    post:
+      summary: Create New Location
+      operationId: create_new_location_locations__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /locations/{location_id}:
+    get:
+      summary: Get Single Location
+      description: "Retrieve a single location by its ID.\n\nArgs:\n    location_id\
+        \ (int): The ID of the location to retrieve.\n    db (Session): The database\
+        \ session.\n\nReturns:\n    LocationResponse: The location data if found.\n\
+        \nRaises:\n    HTTPException: If the location is not found."
+      operationId: get_single_location_locations__location_id__get
+      parameters:
+      - required: true
+        schema:
+          title: Location Id
+          type: integer
+        name: location_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /reviews/:
+    post:
+      summary: Create New Review
+      description: "Create a new review for a location-category combination.\n\nArgs:\n\
+        \    review (LocationCategoryReviewedCreate): The review data to create.\n\
+        \    db (Session): The database session.\n\nReturns:\n    LocationCategoryReviewedResponse:\
+        \ The created review data."
+      operationId: create_new_review_reviews__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCategoryReviewedCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCategoryReviewedResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /reviews/{review_id}:
+    get:
+      summary: Get Single Review
+      description: "Retrieve a single review by its ID.\n\nArgs:\n    review_id (int):\
+        \ The ID of the review to retrieve.\n    db (Session): The database session.\n\
+        \nReturns:\n    LocationCategoryReviewedResponse: The review data if found.\n\
+        \nRaises:\n    HTTPException: If the review is not found."
+      operationId: get_single_review_reviews__review_id__get
+      parameters:
+      - required: true
+        schema:
+          title: Review Id
+          type: integer
+        name: review_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCategoryReviewedResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /exploration/recommendations/:
+    get:
+      summary: Get Recommendations
+      description: "Retrieve exploration recommendations.\n\nArgs:\n    db (Session):\
+        \ The database session.\n    limit (int): The maximum number of recommendations\
+        \ to return.\n\nReturns:\n    List[LocationCategoryReviewedResponse]: The\
+        \ list of recommended location-category combinations."
+      operationId: get_recommendations_exploration_recommendations__get
+      parameters:
+      - required: false
+        schema:
+          title: Limit
+          type: integer
+          default: 10
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Recommendations Exploration Recommendations  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationCategoryReviewedResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /:
+    get:
+      summary: Home
+      description: "Handler for the home route (\"/\") that returns a simple greeting\
+        \ message.\n\nReturns:\n    str: A plain text message indicating the purpose\
+        \ of the application."
+      operationId: home__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    CategoryCreate:
+      title: CategoryCreate
+      required:
+      - name
+      - location_id
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+        location_id:
+          title: Location Id
+          type: integer
+    CategoryResponse:
+      title: CategoryResponse
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+      - location_id
+      type: object
+      properties:
+        id:
+          title: Id
+          type: integer
+        name:
+          title: Name
+          type: string
+        created_at:
+          title: Created At
+          type: string
+          format: date-time
+        updated_at:
+          title: Updated At
+          type: string
+          format: date-time
+        location_id:
+          title: Location Id
+          type: integer
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    LocationCategoryReviewedCreate:
+      title: LocationCategoryReviewedCreate
+      required:
+      - location_id
+      - category_id
+      - reviewed_at
+      type: object
+      properties:
+        location_id:
+          title: Location Id
+          type: integer
+        category_id:
+          title: Category Id
+          type: integer
+        reviewed_at:
+          title: Reviewed At
+          type: string
+          format: date-time
+    LocationCategoryReviewedResponse:
+      title: LocationCategoryReviewedResponse
+      required:
+      - location_id
+      - category_id
+      - reviewed_at
+      - id
+      type: object
+      properties:
+        location_id:
+          title: Location Id
+          type: integer
+        category_id:
+          title: Category Id
+          type: integer
+        reviewed_at:
+          title: Reviewed At
+          type: string
+          format: date-time
+        id:
+          title: Id
+          type: integer
+    LocationCreate:
+      title: LocationCreate
+      required:
+      - name
+      - latitude
+      - longitude
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Name of the location
+        latitude:
+          title: Latitude
+          type: number
+          description: Latitude of the location
+        longitude:
+          title: Longitude
+          type: number
+          description: Longitude of the location
+    LocationResponse:
+      title: LocationResponse
+      required:
+      - name
+      - latitude
+      - longitude
+      - id
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Name of the location
+        latitude:
+          title: Latitude
+          type: number
+          description: Latitude of the location
+        longitude:
+          title: Longitude
+          type: number
+          description: Longitude of the location
+        id:
+          title: Id
+          type: integer
+          description: ID of the location
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string

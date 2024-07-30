@@ -1,9 +1,11 @@
+# routers/category.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Any, List
-from ..schemas.category import CategoryCreate, CategoryResponse
-from api.database.repository.category_repo import(
+from typing import List, Any
+from ..schemas.category import CategoryCreate, CategoryResponse, CategoriesBulkCreate
+from api.database.repository.category_repo import (
     create_category,
+    create_categories,
     get_category,
     get_categories
 )
@@ -25,9 +27,15 @@ def create_new_category(
 
     Returns:
         CategoryResponse: The created category data.
+
+    Raises:
+        HTTPException: If there is an error during the creation process.
     """
-    db_category = create_category(db, category)
-    return db_category
+    try:
+        db_category = create_category(db, category)
+        return db_category
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error creating category: {str(e)}")
 
 @router.get("/categories/{category_id}", response_model=CategoryResponse)
 def get_single_category(
@@ -45,13 +53,15 @@ def get_single_category(
         CategoryResponse: The category data if found.
 
     Raises:
-        HTTPException: If the category is not found.
+        HTTPException: If the category is not found or if there is an error during retrieval.
     """
-    db_category = get_category(db, category_id)
-    if db_category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-    return db_category
-
+    try:
+        db_category = get_category(db, category_id)
+        if db_category is None:
+            raise HTTPException(status_code=404, detail="Category not found")
+        return db_category
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error retrieving category: {str(e)}")
 
 @router.get("/categories/", response_model=List[CategoryResponse])
 def list_categories(
@@ -65,6 +75,36 @@ def list_categories(
 
     Returns:
         List[CategoryResponse]: The list of all categories.
+
+    Raises:
+        HTTPException: If there is an error during the retrieval process.
     """
-    categories = get_categories(db)
-    return categories
+    try:
+        categories = get_categories(db)
+        return categories
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error retrieving categories: {str(e)}")
+
+@router.post("/categories/bulk", response_model=List[CategoryResponse])
+def create_bulk_categories(
+    categories_bulk: CategoriesBulkCreate,
+    db: Session = Depends(get_db)
+) -> List[CategoryResponse]:
+    """
+    Create multiple categories in bulk.
+
+    Args:
+        categories_bulk (CategoriesBulkCreate): A list of categories to create.
+        db (Session): The database session.
+
+    Returns:
+        List[CategoryResponse]: A list of created category data.
+
+    Raises:
+        HTTPException: If there is an error during the creation process.
+    """
+    try:
+        created_categories = create_categories(db, categories_bulk.categories)
+        return created_categories
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error creating categories: {str(e)}")

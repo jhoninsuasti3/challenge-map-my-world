@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from api.utils.custom_http_response import CustomHTTPException, http_exception_handler
-from api.routers import categories, locations, location_category_reviewed
+from api.routers import categories, locations, location_category_reviewed, recommendation
 
 app = FastAPI(
     title="API orbidi",
@@ -11,11 +11,11 @@ app = FastAPI(
 # Manejador de excepciones personalizado
 app.add_exception_handler(CustomHTTPException, http_exception_handler)
 
-# Registra tus routers aquí
+# Registro de routers
 app.include_router(categories.router)
 app.include_router(locations.router)
 app.include_router(location_category_reviewed.router)
-
+app.include_router(recommendation.router)
 
 # Ruta principal de bienvenida
 @app.get("/")

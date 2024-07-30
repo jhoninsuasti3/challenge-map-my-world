@@ -53,3 +53,8 @@ def get_single_review(
     if db_review is None:
         raise HTTPException(status_code=404, detail="Review not found")
     return db_review
+
+
+
+
+# Add news endpoint after here.....
