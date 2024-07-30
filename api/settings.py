@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DB_NAME = str(env("DB_NAME", default=""))
 DB_USER = str(env("DB_USER", default=""))
 DB_PASS = str(env("DB_PASS", default=""))
-DB_PORT = str(env("DB_PORT", default=""))
-DB_HOST = str(env("DB_HOST", default=""))
+DB_PORT = str(env("DB_PORT", default="5432"))
+DB_HOST = str(env("DB_HOST", default="localhost"))
 DB_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+print(DB_URL)

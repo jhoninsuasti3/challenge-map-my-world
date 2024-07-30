@@ -16,15 +16,6 @@ services:
     depends_on:
       - db
 
-  redis:
-    image: redis:latest
-    expose:
-      - 6379
-    volumes:
-      - redis:/data
-    networks:
-      - ordibi
-
   db:
     image: postgres:13.3
     environment:
@@ -58,6 +49,5 @@ networks:
     driver: bridge
 
 volumes:
-  redis: {}
   dev-db-data-test:
   pgadmin:

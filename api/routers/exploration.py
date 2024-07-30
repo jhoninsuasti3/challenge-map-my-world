@@ -1,15 +1,28 @@
 # api/routers/exploration.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from api.utils.database import get_db
-from api.utils.utils import recommend_locations_categories
-from datetime import datetime, timedelta
+from typing import List
+from api.schemas.location_category_reviewed import LocationCategoryReviewedResponse
+from api.database.repository.exploration_repo import get_exploration_recommendations
+from ..database.db import get_db
 
 router = APIRouter()
 
-@router.get("/recommendations/")
-async def get_recommendations(db: Session = Depends(get_db)):
-    thirty_days_ago = datetime.now() - timedelta(days=30)
-    recommended_combinations = recommend_locations_categories(db, thirty_days_ago)
-    return {"recommendations": recommended_combinations}
+@router.get("/exploration/recommendations/", response_model=List[LocationCategoryReviewedResponse])
+def get_recommendations(
+    db: Session = Depends(get_db),
+    limit: int = 10
+) -> List[LocationCategoryReviewedResponse]:
+    """
+    Retrieve exploration recommendations.
+
+    Args:
+        db (Session): The database session.
+        limit (int): The maximum number of recommendations to return.
+
+    Returns:
+        List[LocationCategoryReviewedResponse]: The list of recommended location-category combinations.
+    """
+    recommendations = get_exploration_recommendations(db, limit)
+    return recommendations
